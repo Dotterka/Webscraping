@@ -8,7 +8,7 @@
 from itemadapter import ItemAdapter
 import json
 
-#class EmagPipeline:
+#class MobilePhonePipeline:
 #    def open_spider(self, spider):
 #        self.f = open("emag_items.csv", "w+")
 #        self.posts_writer = csv.writer(self.f)
@@ -26,10 +26,10 @@ import json
 #    def close_spider(self, spider):
 #        self.f.close()
 
-class EmagPipeline:
+class MobilePhonePipeline:
 
     def open_spider(self, spider):
-        self.file = open('emag_items.json', 'w')
+        self.file = open('{name}_items.json'.format(name=spider.name), 'w')
 
     def close_spider(self, spider):
         self.file.close()
