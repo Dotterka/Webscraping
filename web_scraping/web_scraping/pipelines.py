@@ -8,24 +8,6 @@
 from itemadapter import ItemAdapter
 import json
 
-#class MobilePhonePipeline:
-#    def open_spider(self, spider):
-#        self.f = open("emag_items.csv", "w+")
-#        self.posts_writer = csv.writer(self.f)
-#        self.posts_writer.writerow(['name',
-#                                    'price',
-#                                    'url',
-#                                    'review_score',
-#                                    'review_count'])
-#    def process_item(self, item, spider):
-#        self.posts_writer.writerow([item.['name'],
-#                                    item.['price'],
-#                                    item.['url'],
-#                                   item.['review_score'],
-#                                    item.['review_count']])
-#    def close_spider(self, spider):
-#        self.f.close()
-
 class MobilePhonePipeline:
 
     def open_spider(self, spider):
