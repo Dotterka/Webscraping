@@ -1,5 +1,6 @@
 import scrapy
 from ..items import OnlineShopItem
+from datetime import date
 
 class EmagSpider(scrapy.Spider):
     name = 'emag'
@@ -31,7 +32,7 @@ class EmagSpider(scrapy.Spider):
             item['url'] = product.xpath("div[@class='card']//a[@class='product-title js-product-url']/@href").extract_first()
             item['review_score'] = product.xpath("div[@class='card']//div[contains(@class, 'star-rating-read')]/@class").extract_first().split(" ")[2].split("-")[-1] 
             item['review_count'] = product.xpath("//div[@class='card']//span[@class='hidden-xs ']/text()").extract_first().split(" ")[0]
-            item['provider_name'] = 'emag'
+            item['provider_name'] = self.name
             item['color'] = None
             item['display_type'] = None
             item['display_resolution'] = None        
@@ -46,5 +47,6 @@ class EmagSpider(scrapy.Spider):
             item['nfc_indicator'] = None
             item['battery_type'] = None
             item['battery_capacity'] = None
+            item['date'] = date.today().strftime("%d/%m/%Y")
 
             yield item

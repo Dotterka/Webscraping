@@ -1,6 +1,7 @@
 import scrapy
 import json
 from ..items import OnlineShopItem
+from datetime import date
 
 class EmagRevisitSpider(scrapy.Spider):
     name = 'emag_revisit'
@@ -65,6 +66,7 @@ class EmagRevisitSpider(scrapy.Spider):
             item['battery_capacity'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Capacitate baterie')]/following-sibling::td/text()").extract_first().strip()
         else:
             item['battery_capacity'] = None
+        item['date'] = date.today().strftime("%d/%m/%Y")
 
         yield item
    

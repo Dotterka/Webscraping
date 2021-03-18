@@ -1,5 +1,6 @@
 import scrapy
 from ..items import OnlineShopItem
+from datetime import date
 
 class PcGarageSpider(scrapy.Spider):
     name = 'pc_garage'
@@ -32,7 +33,7 @@ class PcGarageSpider(scrapy.Spider):
         item['url'] = response.url
         item['review_score'] = response.xpath("//div[@class='ar_title rating_bar_inline']/p/b/span/text()").extract_first() or "0"  
         item['review_count'] = response.xpath("//span[@itemprop='reviewCount']/text()").extract_first() or "0"
-        item['provider_name'] = 'pc_garage'
+        item['provider_name'] = self.name
         #error-handling if the field doesn't exist
         try: 
           item['color'] = response.xpath("//table[@id='specs_table']//td[contains(text(),'Culoare')]/following-sibling::td/div/text()").extract_first().strip()
@@ -64,5 +65,6 @@ class PcGarageSpider(scrapy.Spider):
           item['battery_capacity'] = response.xpath("//table[@id='specs_table']//td[contains(text(),'Capacitate acumulator')]/following-sibling::td/div/text()").extract_first().strip()
         except AttributeError:
           item['battery_capacity'] = None
+        item['date'] = date.today().strftime("%d/%m/%Y")
 
         yield item

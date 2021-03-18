@@ -26,3 +26,4 @@ class OnlineShopItem(scrapy.Item):
     nfc_indicator = scrapy.Field()
     battery_type = scrapy.Field()
     battery_capacity = scrapy.Field()
+    date = scrapy.Field()
