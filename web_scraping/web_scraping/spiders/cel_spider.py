@@ -1,5 +1,6 @@
 import scrapy
 from ..items import OnlineShopItem
+from datetime import date
 
 class CelSpider(scrapy.Spider):
     name = 'cel'
@@ -28,7 +29,7 @@ class CelSpider(scrapy.Spider):
             item['url'] = product.xpath("div[@class='productListingWrapper']//@href").extract_first()
             item['review_score'] = None 
             item['review_count'] = None
-            item['provider_name'] = 'cel'
+            item['provider_name'] = self.name
             item['color'] = None
             item['display_type'] = None
             item['display_resolution'] = None        
@@ -43,6 +44,7 @@ class CelSpider(scrapy.Spider):
             item['nfc_indicator'] = None
             item['battery_type'] = None
             item['battery_capacity'] = None
+            item['date'] = date.today().strftime("%d/%m/%Y")
 
             yield item
    

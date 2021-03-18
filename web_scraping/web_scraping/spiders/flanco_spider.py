@@ -1,5 +1,6 @@
 import scrapy
 from ..items import OnlineShopItem
+from datetime import date
 
 class FlancoSpider(scrapy.Spider):
     name = 'flanco'
@@ -13,6 +14,9 @@ class FlancoSpider(scrapy.Spider):
                         'ITEM_PIPELINES': {'web_scraping.pipelines.MobilePhonePipeline': 300}
                         }
     
+    def __init__(self, *args, **kwargs):
+        super(FlancoSpider, self).__init__(*args, **kwargs)
+
     def parse(self, response):
         products = response.xpath("//div[@class='produs']")
 
@@ -22,6 +26,7 @@ class FlancoSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(next_page), callback=self.parse)
         for product in products:
             item = OnlineShopItem()
+                
             item['name'] = ' '.join(product.xpath("div[@class='produs-title']//a[@class='product-new-link']/@title").extract_first().split(",")[0].split(" ")[2:]).strip() \
                            + " " + ' '.join(product.xpath("div[@class='produs-title']//a[@class='product-new-link']/@title").extract_first().split("GB,")[0].split(",")[-1:]).strip() \
                            + " GB " + ' '.join(product.xpath("div[@class='produs-title']//a[@class='product-new-link']/@title").extract_first().strip().split(",")[-1:]).strip()
@@ -36,7 +41,7 @@ class FlancoSpider(scrapy.Spider):
             item['review_count'] = product.xpath("div[@class='rating']//span[@class='count']/text()").extract_first().split("(")[1].split(")")[0].strip()
             if item['review_count'] != "0":
                 item['review_count'] = product.xpath("div[@class='rating']//span[@class='count']/text()").extract_first().split("(")[1].split(" ")[0].strip()
-            item['provider_name'] = 'flanco'
+            item['provider_name'] = self.name
             item['color'] = None
             item['display_type'] = None
             item['display_resolution'] = None        
@@ -51,6 +56,7 @@ class FlancoSpider(scrapy.Spider):
             item['nfc_indicator'] = None
             item['battery_type'] = None
             item['battery_capacity'] = None
+            item['date'] = date.today().strftime("%d/%m/%Y")
 
             yield item
    
