@@ -17,6 +17,8 @@ class CelSpider(scrapy.Spider):
     def parse(self, response):
         products = response.xpath("//div[@cat_nam='Telefoane Mobile']")
 
+        # import ipdb; ipdb.set_trace()
+            
         #pagination
         next_page = response.xpath("//a[@class='last']/@href").extract_first()
         if next_page:
@@ -26,7 +28,7 @@ class CelSpider(scrapy.Spider):
             item['name'] = ' '.join(product.xpath("div[@class='productListingWrapper']//span/text()").extract_first().split(" ")[2:]).split("GB ")[0] + " GB " \
                             + product.xpath("div[@class='productListingWrapper']//span/text()").extract_first().split(" ")[-1]
             item['price'] = product.xpath("div[@class='productListingWrapper']//div[@class='pretWrapper']//b/text()").extract_first()
-            item['url'] = product.xpath("div[@class='productListingWrapper']//@href").extract_first()
+            item['url'] = response.urljoin(product.xpath("div[@class='productListingWrapper']//@href").extract_first())
             item['review_score'] = None 
             item['review_count'] = None
             item['provider_name'] = self.name
@@ -44,7 +46,7 @@ class CelSpider(scrapy.Spider):
             item['nfc_indicator'] = None
             item['battery_type'] = None
             item['battery_capacity'] = None
-            item['date'] = date.today().strftime("%d/%m/%Y")
+            item['date'] = date.today().strftime("%m/%d/%Y")
 
             yield item
    

@@ -47,6 +47,6 @@ class EmagSpider(scrapy.Spider):
             item['nfc_indicator'] = None
             item['battery_type'] = None
             item['battery_capacity'] = None
-            item['date'] = date.today().strftime("%d/%m/%Y")
+            item['date'] = date.today().strftime("%m/%d/%Y")
 
             yield item
