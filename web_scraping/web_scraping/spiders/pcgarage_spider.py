@@ -65,6 +65,6 @@ class PcGarageSpider(scrapy.Spider):
           item['battery_capacity'] = response.xpath("//table[@id='specs_table']//td[contains(text(),'Capacitate acumulator')]/following-sibling::td/div/text()").extract_first().strip()
         except AttributeError:
           item['battery_capacity'] = None
-        item['date'] = date.today().strftime("%d/%m/%Y")
+        item['date'] = date.today().strftime("%m/%d/%Y")
 
         yield item

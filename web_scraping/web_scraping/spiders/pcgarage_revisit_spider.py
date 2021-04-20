@@ -14,13 +14,16 @@ class PcGarageRevisitSpider(scrapy.Spider):
                         'ITEM_PIPELINES': {'web_scraping.pipelines.MobilePhonePipeline': 300}
                         }
     
+    def __init__(self, *args, **kwargs):
+        super(PcGarageRevisitSpider, self).__init__(*args, **kwargs)
+
     def parse(self, response):
         products = response.xpath("//div[@class='product_box_container']")
 
         #pagination
         next_page = response.xpath("//a[@class='gradient_half' and text()='›']/@href").extract_first()
         if next_page:
-            yield scrapy.Request(response.urljoin(next_page), callback=self.parse)
+            yield scrapy.Request(response.urljoin(next_page), callback=self.parse)    
         for product in products:
             item = OnlineShopItem()
             item['name'] = ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()").extract_first().strip().split(",")[0].split(" ")[1:]) + " " \
@@ -45,6 +48,6 @@ class PcGarageRevisitSpider(scrapy.Spider):
             item['nfc_indicator'] = None
             item['battery_type'] = None
             item['battery_capacity'] = None
-            item['date'] = date.today().strftime("%d/%m/%Y")
+            item['date'] = date.today().strftime("%m/%d/%Y")
 
             yield item

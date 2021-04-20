@@ -19,7 +19,7 @@ class FlancoSpider(scrapy.Spider):
 
     def parse(self, response):
         products = response.xpath("//div[@class='produs']")
-
+        # import ipdb; ipdb.set_trace()
         #pagination
         next_page = response.xpath("//a[@class='next i-next']/@href").extract_first()
         if next_page:
@@ -56,7 +56,7 @@ class FlancoSpider(scrapy.Spider):
             item['nfc_indicator'] = None
             item['battery_type'] = None
             item['battery_capacity'] = None
-            item['date'] = date.today().strftime("%d/%m/%Y")
+            item['date'] = date.today().strftime("%m/%d/%Y")
 
             yield item
    

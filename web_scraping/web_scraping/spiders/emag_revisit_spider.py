@@ -33,13 +33,19 @@ class EmagRevisitSpider(scrapy.Spider):
         item['review_count'] = response.xpath("//p[@class='hidden-xs']/a[@href='#reviews-section']/text()").extract_first() or "0"
         item['review_count'] = item['review_count'].split(" ")[0]
         item['provider_name'] = 'emag'
-        item['color'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Culoare')]/following-sibling::td/text()").extract_first().strip()
+        if response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Culoare')]/following-sibling::td/text()").get():
+            item['color'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Culoare')]/following-sibling::td/text()").extract_first().strip()
+        else:
+            item['color'] = None
         #checking if the field exist
         if response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Tip display')]/following-sibling::td/text()").get():
             item['display_type'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Tip display')]/following-sibling::td/text()").extract_first().strip()
         else:
             item['display_type'] = None
-        item['display_resolution'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Rezolutie (pixeli)')]/following-sibling::td/text()").extract_first().strip()        
+        if response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Rezolutie (pixeli)')]/following-sibling::td/text()").get():
+            item['display_resolution'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Rezolutie (pixeli)')]/following-sibling::td/text()").extract_first().strip()        
+        else:
+            item['display_resolution'] = None
         item['display_size'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Dimensiune ecran')]/following-sibling::td/text()").extract_first().strip().split(" ")[0]
         if response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Model procesor')]/following-sibling::td/text()").get():
             item['chipset'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Model procesor')]/following-sibling::td/text()").extract_first().strip()
@@ -66,7 +72,7 @@ class EmagRevisitSpider(scrapy.Spider):
             item['battery_capacity'] = response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Capacitate baterie')]/following-sibling::td/text()").extract_first().strip()
         else:
             item['battery_capacity'] = None
-        item['date'] = date.today().strftime("%d/%m/%Y")
+        item['date'] = date.today().strftime("%m/%d/%Y")
 
         yield item
    
