@@ -1,0 +1,17 @@
+version: '3.6'
+services:
+  mongodb:
+    image: mongo
+    container_name: webscraping_mongo
+    ports:
+        - '27017:27017'
+    user: '0' 
+    volumes:
+          - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo-js:ro
+          - ./webshops_backup:/data/db
+          - ./webshops_restore:/data_restore/db
+    restart: always
+    environment:
+          - MONGO_INITDB_DATABASE=DATABASENAME
+          - MONGO_INITDB_ROOT_USERNAME=USER
+          - MONGO_INITDB_ROOT_PASSWORD=PASSWORD
