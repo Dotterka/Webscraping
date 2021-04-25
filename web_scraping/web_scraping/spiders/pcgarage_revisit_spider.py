@@ -1,36 +1,39 @@
 import scrapy
 from ..items import OnlineShopItem
 from datetime import date
+import cfscrape
+from lxml import html
+
+# returns a CloudflareScraper instance
+scraper = cfscrape.create_scraper()
 
 class PcGarageRevisitSpider(scrapy.Spider):
     name = 'pc_garage_revisit'
-    #start url is the smartphone category
-    start_urls = [
-            'https://www.pcgarage.ro/smartphone/'
-    ]
+    # start url is google, because pc_garage url at this point isn't available
+    start_urls = ['https://www.google.com']
    
-    #output file
+    # output file
     custom_settings = { 
                         'ITEM_PIPELINES': {'web_scraping.pipelines.MobilePhonePipeline': 300}
                         }
-    
-    def __init__(self, *args, **kwargs):
-        super(PcGarageRevisitSpider, self).__init__(*args, **kwargs)
+        
 
     def parse(self, response):
-        products = response.xpath("//div[@class='product_box_container']")
+        response = scraper.get("https://www.pcgarage.ro/smartphone/").content
+        item = OnlineShopItem()
+        items = self.get_items_from_response(response)
+        for item in items:
+            yield item
 
-        #pagination
-        next_page = response.xpath("//a[@class='gradient_half' and text()='›']/@href").extract_first()
-        if next_page:
-            yield scrapy.Request(response.urljoin(next_page), callback=self.parse)    
+    def get_items_from_response(self, response, items=[]):
+        products = html.fromstring(response).xpath("//div[@class='product_box_container']")
         for product in products:
             item = OnlineShopItem()
-            item['name'] = ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()").extract_first().strip().split(",")[0].split(" ")[1:]) + " " \
-                         + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()").extract_first().strip().split("GB,")[0].split(",")[-1:]).strip()+ " GB " \
-                         + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()").extract_first().strip().split(",")[-1:]).strip()
-            item['price'] = product.xpath("div[@class='product_box']//p[@class='price']/text()").extract_first().split(" ")[0].replace(".", "").replace(",", ".")
-            item['url'] = product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/@href").extract_first()
+            item['name'] = ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split(",")[0].split(" ")[1:]) + " " \
+                         + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split("GB,")[0].split(",")[-1:]).strip()+ " GB " \
+                         + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split(",")[-1:]).strip()
+            item['price'] = product.xpath("div[@class='product_box']//p[@class='price']/text()")[0].split(" ")[0].replace(".", "").replace(",", ".")
+            item['url'] = product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/@href")[0]
             item['review_score'] = None 
             item['review_count'] = None
             item['provider_name'] = "pc_garage"
@@ -49,5 +52,10 @@ class PcGarageRevisitSpider(scrapy.Spider):
             item['battery_type'] = None
             item['battery_capacity'] = None
             item['date'] = date.today().strftime("%m/%d/%Y")
-
-            yield item
+            items.append(item)
+        # pagination
+        next_page = html.fromstring(response).xpath("//a[@class='gradient_half' and text()='›']/@href")
+        if next_page:
+            response = scraper.get(next_page[0]).content
+            items = self.get_items_from_response(response, items)
+        return items
