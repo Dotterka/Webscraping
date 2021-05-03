@@ -28,31 +28,34 @@ class PcGarageRevisitSpider(scrapy.Spider):
     def get_items_from_response(self, response, items=[]):
         products = html.fromstring(response).xpath("//div[@class='product_box_container']")
         for product in products:
-            item = OnlineShopItem()
-            item['name'] = ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split(",")[0].split(" ")[1:]) + " " \
-                         + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split("GB,")[0].split(",")[-1:]).strip()+ " GB " \
-                         + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split(",")[-1:]).strip()
-            item['price'] = product.xpath("div[@class='product_box']//p[@class='price']/text()")[0].split(" ")[0].replace(".", "").replace(",", ".")
-            item['url'] = product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/@href")[0]
-            item['review_score'] = None 
-            item['review_count'] = None
-            item['provider_name'] = "pc_garage"
-            item['color'] = None
-            item['display_type'] = None
-            item['display_resolution'] = None        
-            item['display_size'] = None
-            item['chipset'] = None
-            item['internal_memory'] = None
-            item['ram'] = None
-            item['main_camera'] = None
-            item['selfie_camera'] = None
-            item['os'] = None
-            item['os_version'] = None
-            item['nfc_indicator'] = None
-            item['battery_type'] = None
-            item['battery_capacity'] = None
-            item['date'] = date.today().strftime("%m/%d/%Y")
-            items.append(item)
+            if product.xpath("div[@class='product_box']//p[@class='price']/text()"):
+                item = OnlineShopItem()
+                # import ipdb; ipdb.set_trace()
+                    
+                item['name'] = ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split(",")[0].split(" ")[1:]) + " " \
+                             + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split("GB,")[0].split(",")[-1:]).strip()+ " GB " \
+                             + ' '.join(product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/text()")[0].strip().split(",")[-1:]).strip()
+                item['price'] = product.xpath("div[@class='product_box']//p[@class='price']/text()")[0].split(" ")[0].replace(".", "").replace(",", ".")
+                item['url'] = product.xpath("div[@class='product_box']//div[@class='product_box_name']//a/@href")[0]
+                item['review_score'] = None 
+                item['review_count'] = None
+                item['provider_name'] = "pc_garage"
+                item['color'] = None
+                item['display_type'] = None
+                item['display_resolution'] = None        
+                item['display_size'] = None
+                item['chipset'] = None
+                item['internal_memory'] = None
+                item['ram'] = None
+                item['main_camera'] = None
+                item['selfie_camera'] = None
+                item['os'] = None
+                item['os_version'] = None
+                item['nfc_indicator'] = None
+                item['battery_type'] = None
+                item['battery_capacity'] = None
+                item['date'] = date.today().strftime("%m/%d/%Y")
+                items.append(item)
         # pagination
         next_page = html.fromstring(response).xpath("//a[@class='gradient_half' and text()='›']/@href")
         if next_page:
