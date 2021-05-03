@@ -1,0 +1,1 @@
+python3 upload_to_products.py && python3 upload_to_prices.py
