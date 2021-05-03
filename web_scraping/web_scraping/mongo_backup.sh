@@ -1,0 +1,1 @@
+sudo mongodump --forceTableScan --uri "mongodb://user:password@host:27017/db_name?authSource=admin" --out ../../../webshops_backup
