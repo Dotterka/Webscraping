@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from datetime import datetime 
   
 # Making Connection 
-myclient = MongoClient("mongodb://host:27017",username='user',password='password')  
+myclient = MongoClient("mongodb://host:27017",username='user',password='password')   
    
 # database  
 db = myclient["webshops"] 

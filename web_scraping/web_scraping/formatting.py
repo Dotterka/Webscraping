@@ -5,7 +5,7 @@ from datetime import date
 
 # read the json files
 df_emag=pd.read_json('emag_items.json', lines=True)
-df_pc_garage=pd.read_json('pc_garage_items.json', lines=True)
+df_pc_garage=pd.read_json('pc_garage_revisit_items.json', lines=True)
 df_cel=pd.read_json('cel_items.json', lines=True)
 df_flanco=pd.read_json('flanco_items.json', lines=True)
 
