@@ -9,8 +9,8 @@ scraper = cfscrape.create_scraper()
 
 class PcGarageRevisitSpider(scrapy.Spider):
     name = 'pc_garage_revisit'
-    # start url is google, because pc_garage url at this point isn't available
-    start_urls = ['https://www.google.com']
+    # start url is wikipedia, because pc_garage url at this point isn't available
+    start_urls = ['https://www.wikipedia.org']
    
     # output file
     custom_settings = { 
