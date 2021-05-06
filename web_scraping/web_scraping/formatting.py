@@ -8,6 +8,7 @@ df_emag=pd.read_json('emag_items.json', lines=True)
 df_pc_garage=pd.read_json('pc_garage_revisit_items.json', lines=True)
 df_cel=pd.read_json('cel_items.json', lines=True)
 df_flanco=pd.read_json('flanco_items.json', lines=True)
+df_old=pd.read_json('products_old.json', lines=True)
 
 # rename the columns
 df_emag=df_emag.rename(columns={"price":"emag_price","url":"emag_url","review_score":"emag_review_score","review_count":"emag_review_count","provider_name":"emag"})
@@ -57,21 +58,39 @@ df_pc_emag_cel_flanco[['date_1']]=date.today().strftime("%m/%d/%Y")
 df_pc_emag_cel_flanco = df_pc_emag_cel_flanco.fillna(value=np.nan)
 
 # add an ID column
-
-np.random.seed(1)
+# assign ID's only to the new data
+df_products_new=pd.merge(df_old[['name']],df_pc_emag_cel_flanco,on=['name'],how="right", indicator=True).query('_merge=="right_only"')
+df_products_new=df_products_new.drop(columns={"_merge"})
+a=len(df_products_new)
+np.random.rand(a)
 
 # create a list of unique names from product names and urls
-df_copy=df_pc_emag_cel_flanco.replace(np.nan, '', regex=True)
+df_copy=df_products_new.replace(np.nan, '', regex=True)
 names = df_copy[['name', 'emag_url','pc_garage_url','cel_url','flanco_url']].agg(' '.join, 1).unique().tolist()
 
 # generate ids
-ids = np.random.randint(low=1e9, high=1e10, size = len(names))
+def my_custom_random():
+  exclude=df_old['id'].tolist()
+  randInt = np.random.randint(low=1e9, high=1e10, size = len(names))
+  for nr in randInt:
+    if nr not in exclude:
+      return randInt
+    else:
+      return my_custom_random() 
 
 # maps ids to names
-maps = {k:v for k,v in zip(names, ids)}
+maps = {k:v for k,v in zip(names, my_custom_random())}
 
 # add new id column
-df_pc_emag_cel_flanco['id'] = df_copy[['name', 'emag_url','pc_garage_url','cel_url','flanco_url']].agg(' '.join, 1).map(maps)
+df_products_new['id'] = df_copy[['name', 'emag_url','pc_garage_url','cel_url','flanco_url']].agg(' '.join, 1).map(maps)
+
+# if the data already exist on the database (name and emag_url) then assign to them the old items ID
+df_dropped=df_pc_emag_cel_flanco.drop_duplicates(subset='emag_url', keep="first")
+df_old_items=pd.merge(df_old[['name','emag_url']],df_dropped,on=['name','emag_url'],how="inner").drop_duplicates()
+df_old_products=pd.merge(df_old_items,df_old[['name','emag_url','id']],on=['name','emag_url'], how='left')
+frames = [df_products_new,df_old_products]
+df_pc_emag_cel_flanco=pd.concat(frames)
+df_pc_emag_cel_flanco=df_pc_emag_cel_flanco.drop_duplicates(subset='emag_url', keep="first")
 
 # products collection (without prices, dates and with provider name boolean list)
 cols = ['pc_garage','emag','cel','flanco']

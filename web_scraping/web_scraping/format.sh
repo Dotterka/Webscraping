@@ -1,1 +1,1 @@
-python3 formatting.py && python3 get_products.py && python3 get_prices.py && python3 update_products.py && python3 update_prices.py && scrapy crawl emag_revisit && python3 new_products.py
+python3 get_products.py && python3 get_prices.py && python3 formatting.py && python3 update_products.py && python3 update_prices.py && scrapy crawl emag_revisit && python3 new_products.py
