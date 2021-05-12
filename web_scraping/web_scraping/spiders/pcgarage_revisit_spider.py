@@ -1,11 +1,11 @@
 import scrapy
 from ..items import OnlineShopItem
 from datetime import date
-import cfscrape
+import cloudscraper
 from lxml import html
 
 # returns a CloudflareScraper instance
-scraper = cfscrape.create_scraper()
+scraper = cloudscraper.create_scraper()
 
 class PcGarageRevisitSpider(scrapy.Spider):
     name = 'pc_garage_revisit'
