@@ -23,7 +23,7 @@ class EmagRevisitSpider(scrapy.Spider):
                 yield scrapy.Request(url, callback=self.parse_product)
 
     def parse_product(self, response): 
-        if response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Tip display')]/following-sibling::td/text()").get():   
+        if response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Tip display')]/following-sibling::td/text()").get() and response.xpath("//table[@class='table table-striped product-page-specifications']//td[contains(text(),'Memorie RAM')]/following-sibling::td/text()").get():   
             item = OnlineShopItem()
             item['name'] = ' '.join(response.xpath("//h1[@class='page-title']/text()").extract_first().strip().split(",")[0].split(" ")[2:]) \
                             + ' '.join(response.xpath("//h1[@class='page-title']/text()").extract_first().strip().split("GB,")[0].split(",")[-1:]) \

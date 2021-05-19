@@ -1,5 +1,5 @@
 Scrapy==2.3.0
-cfscrape==2.1.1
+cloudscraper==1.2.58
 Flask==1.1.2
 Flask-PyMongo==2.3.0
 ipdb==0.13.3
