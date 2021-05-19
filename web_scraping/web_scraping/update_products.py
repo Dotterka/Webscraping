@@ -75,6 +75,15 @@ df_products_new=pd.merge(df_old[['name']],df_new,on=['name'],how="right", indica
 df_products_new=df_products_new.drop(columns={"_merge"})
 df_products_new.to_json('new_items.json', orient='records', lines=True)
 
-# save the links only
 df_links=df_products_new['emag_url'].dropna()
-df_links.to_json('emag_revisit_links.json', orient='records')
+df_links=df_links.to_frame()
+# keep only those links which are not in old links
+df_links_old=pd.read_json("emag_revisit_links.json", lines=True)
+df_links_old=df_links_old.T
+df_links_old=df_links_old.rename(columns={0:'emag_url'})
+df_links_final=pd.merge(df_links_old[['emag_url']],df_links,on=['emag_url'],how="right", indicator=True).query('_merge=="right_only"')
+df_links_final=df_links_final.drop(columns={"_merge"})
+links_final=df_links_final['emag_url']
+
+# save the links
+links_final.to_json('emag_revisit_links.json', orient='records')

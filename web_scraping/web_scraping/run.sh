@@ -1,1 +1,1 @@
-scrapy crawl flanco && scrapy crawl cel && scrapy crawl pc_garage_revisit && scrapy crawl emag  
+scrapy crawl flanco && scrapy crawl cel 
